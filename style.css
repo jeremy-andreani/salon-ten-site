@@ -249,6 +249,7 @@ blockquote { border-left: 3px solid var(--gold); margin: 20px 0; padding-left: 1
 
 .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .testi { padding: 24px 22px; background: #fff; border: 1px solid var(--line); }
+.testi .stars { color: var(--gold-dark); letter-spacing: 2px; font-size: 0.85rem; margin: 0 0 10px; }
 .testi p { font-size: 0.95rem; color: var(--muted); margin: 0 0 14px; }
 .testi cite { font-style: normal; font-size: 0.85rem; color: var(--accent-dark); font-weight: 600; }
 
