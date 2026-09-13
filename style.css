@@ -273,13 +273,11 @@ blockquote { border-left: 3px solid var(--gold); margin: 20px 0; padding-left: 1
 .loc-row .label { color: var(--muted); }
 .map-block {
   border: 1px solid var(--line); min-height: 100%;
-  background:
-    linear-gradient(0deg, rgba(15,51,117,0.06) 1px, transparent 1px) 0 0/28px 28px,
-    linear-gradient(90deg, rgba(15,51,117,0.06) 1px, transparent 1px) 0 0/28px 28px,
-    var(--bg-deep);
-  display: flex; align-items: center; justify-content: center; padding: 32px; text-align: center;
+  display: flex; flex-direction: column; gap: 16px; padding: 16px; text-align: center;
 }
-.map-block a { font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--accent-dark); text-decoration: underline; text-underline-offset: 4px; }
+.map-embed { position: relative; width: 100%; flex: 1; min-height: 260px; overflow: hidden; }
+.map-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.map-block a { align-self: center; font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--accent-dark); text-decoration: underline; text-underline-offset: 4px; }
 
 /* Contact (Contact page) */
 
