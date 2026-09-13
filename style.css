@@ -188,7 +188,7 @@ main { display: block; }
 
 /* Treatment category grid (home page) */
 
-.treat-cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid var(--line); }
+.treat-cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--line); }
 .treat-cat { padding: 32px; border-right: 1px solid var(--line); }
 .treat-cat:last-child { border-right: none; }
 .treat-cat .sub { display: block; color: var(--accent-dark); font-size: 0.82rem; font-weight: 600; margin-bottom: 18px; }
