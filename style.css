@@ -271,7 +271,7 @@ blockquote { border-left: 3px solid var(--gold); margin: 20px 0; padding-left: 1
 .team-card img { width: 84px; height: 84px; object-fit: cover; border-radius: 50%; margin: 0 auto 16px; }
 .team-card h2 { font-size: 1.1rem; margin-bottom: 6px; }
 .team-card .role { display: block; color: var(--accent-dark); font-weight: 600; font-size: 0.82rem; margin-bottom: 10px; }
-.team-card p { color: var(--muted); font-size: 0.92rem; margin: 0 0 14px; }
+.team-card p { color: var(--muted); font-size: 0.92rem; margin: 0 0 14px; text-align: left; }
 .team-card p:last-child { margin-bottom: 0; }
 
 /* Testimonials */
