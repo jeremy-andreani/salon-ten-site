@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Salon Policies &amp; Etiquette – Salon Ten</title>
-<meta name="description" content="Salon policies and etiquette for Salon Ten, Mount Hutton.">
+<title>Salon Policies &amp; Our Mission – Salon Ten</title>
+<meta name="description" content="Salon policies and our mission at Salon Ten, Mount Hutton.">
 <link rel="stylesheet" href="style.css">
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-976595232"></script>
   <script>
@@ -20,7 +20,10 @@
 <header class="site-header">
   <div class="nav-inner">
     <a class="brand" href="index.html"><img src="img/logo.png" alt="Salon Ten" width="130" height="41"></a>
-    <ul class="nav-links">
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="team.html">Our Team</a></li>
@@ -38,7 +41,7 @@
 
 <section class="page-intro wrap">
   <div class="kicker">Policies</div>
-  <h1>Salon Policies &amp; Etiquette</h1>
+  <h1>Salon Policies &amp; Our Mission</h1>
 </section>
 
 <section class="section">
@@ -70,7 +73,7 @@
       </dl>
     </div>
     <div class="faq-card">
-      <h2>Salon Etiquette</h2>
+      <h2>Our Mission</h2>
       <p>At Salon Ten we are committed and dedicated to delivering excellence in beauty therapy. We pride ourselves on establishing relationships with our clients through our exceptional services, highly trained, passionate experienced therapists, education, advice and genuine care. Our mission is to give every client every time an exceptional service so they look forward to rebooking and returning to us time and time again. We love what we do and look forward to sharing it with you.</p>
       <dl class="faq-list">
         <dt>Privacy</dt>
@@ -83,7 +86,7 @@
         <dd>As a consideration to all guests, we ask that you help us keep noise to a minimum at all times. We would appreciate it if you turn your phone off or to silent while in the salon.</dd>
 
         <dt>Environment Sustainability</dt>
-        <dd>At Salon Ten we are committed to keep striving for better business practices in order to help reduce our waste. We aim to help lower our waste produced, choosing to do business with skincare and product suppliers that also are aware and reducing their impact on the environment, that don&rsquo;t test on animals and use recyclable containers for their products. We use water soluble massage oils that are easily broken down and better for our waterways. We do not use plastic bags for our retail, opting for recyclable paper bags and handles. Our LED lights in the salon are energy efficient. These are just some of the ways we are helping to reduce our footprint.</dd>
+        <dd>We choose skincare and product suppliers who don&rsquo;t test on animals and use recyclable containers, use water soluble massage oils and recyclable paper bags, and run energy efficient LED lighting throughout the salon.</dd>
 
         <dt>ABIC Members</dt>
         <dd>Our salon is a proud member of the Aesthetic &amp; Beauty Industry Council to keep up to date with our ever changing industry.</dd>
@@ -135,6 +138,7 @@
     <span><a class="btn btn-small" href="https://www.kitomba.com/bookings/salonten#voucher" target="_blank" rel="noopener">Gift Vouchers</a></span>
   </div>
 </footer>
+<script src="nav.js"></script>
 <script src="conversion.js"></script>
 </body>
 </html>

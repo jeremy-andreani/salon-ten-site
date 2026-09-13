@@ -20,7 +20,10 @@
 <header class="site-header">
   <div class="nav-inner">
     <a class="brand" href="index.html"><img src="img/logo.png" alt="Salon Ten" width="130" height="41"></a>
-    <ul class="nav-links">
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="team.html">Our Team</a></li>
@@ -106,6 +109,7 @@
     <span><a class="btn btn-small" href="https://www.kitomba.com/bookings/salonten#voucher" target="_blank" rel="noopener">Gift Vouchers</a></span>
   </div>
 </footer>
+<script src="nav.js"></script>
 <script src="conversion.js"></script>
 </body>
 </html>
