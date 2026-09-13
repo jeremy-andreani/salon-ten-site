@@ -1,16 +1,20 @@
-@import url('https://fonts.googleapis.com/css?family=Parisienne:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic|Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic|Libre+Baskerville:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic|Frank+Ruhl+Libre:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700&display=swap');
 
 :root {
-  --ink: #3a3a3a;
-  --muted: #5b6670;
-  --bg: #fdfcfa;
-  --line: #e6e1da;
-  --accent: #b0a682;
-  --accent-dark: #b0a682;
-  --accent-soft: #eef1ea;
-  --accent-hover: #25ced1;
-  --primary-link: #4064d7;
-  --radius: 5px;
+  --ink: #0A1B36;
+  --muted: #3E5170;
+  --bg: #F6F7FA;
+  --bg-deep: #E7EAF1;
+  --line: rgba(15, 51, 117, 0.16);
+  --accent: #2E56A0;
+  --accent-dark: #0F3375;
+  --accent-soft: #E7EAF1;
+  --gold: #C9A66B;
+  --gold-dark: #A8843F;
+  --primary-link: #0F3375;
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --sans: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius: 2px;
   font-size: 17px;
 }
 
@@ -18,17 +22,20 @@
 
 body {
   margin: 0;
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--sans);
   color: var(--ink);
   background: var(--bg);
-  line-height: 1.5;
+  line-height: 1.55;
   font-weight: 400;
+  -webkit-font-smoothing: antialiased;
 }
 
 a { color: var(--primary-link); text-decoration: none; }
 a:hover { color: var(--ink); }
 
 img { max-width: 100%; display: block; }
+
+h1, h2 { font-family: var(--serif); font-weight: 500; }
 
 main {
   max-width: 720px;
@@ -46,7 +53,11 @@ main {
   padding: 14px 20px;
   border-bottom: 1px solid var(--line);
   flex-wrap: wrap;
-  background: #fdfcfa;
+  background: rgba(246, 247, 250, 0.92);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .brand img { height: 40px; width: auto; margin: 0; }
@@ -61,43 +72,45 @@ main {
   font-size: 0.95rem;
   text-decoration: none;
   white-space: nowrap;
+  color: var(--ink);
+  font-weight: 600;
 }
 
 /* Buttons */
 
 .btn {
   display: inline-block;
-  padding: 10px 40px;
+  padding: 11px 32px;
   border-radius: var(--radius);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
   text-align: center;
   white-space: nowrap;
-  border: 1px solid var(--accent);
-  transition: all 0.2s ease;
+  border: 1px solid var(--accent-dark);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-primary {
-  background: var(--accent);
+  background: var(--accent-dark);
   color: #fff;
-  border-color: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
+  background: var(--ink);
+  border-color: var(--ink);
   color: #fff;
 }
 
 .btn-secondary {
   background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent);
+  color: var(--ink);
+  border: 1px solid var(--ink);
 }
 
 .btn-secondary:hover {
-  background: var(--accent);
+  background: var(--ink);
   color: #fff;
 }
 
@@ -107,9 +120,9 @@ main {
 
 /* Hero (home + contact CTA) */
 
-.hero { text-align: center; padding: 32px 0 8px; }
-.hero h1 { font-size: 2.1rem; letter-spacing: 0.04em; margin: 0 0 6px; }
-.hero .tagline { color: var(--muted); margin: 0 0 20px; }
+.hero { text-align: center; padding: 36px 0 8px; }
+.hero h1 { font-size: 2.2rem; letter-spacing: 0.01em; margin: 0 0 8px; line-height: 1.1; }
+.hero .tagline { color: var(--muted); margin: 0 0 22px; }
 .hero-actions { display: grid; gap: 10px; max-width: 340px; margin: 0 auto; }
 
 /* Tile grid (home page treatments) */
@@ -118,7 +131,7 @@ main {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .tile {
@@ -132,23 +145,23 @@ main {
   text-decoration: none;
   color: var(--ink);
   font-weight: 600;
-  background: var(--accent-soft);
+  background: #fff;
   min-height: 72px;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .tile:hover {
-  border-color: var(--accent);
-  background: #fff;
+  border-color: var(--accent-dark);
+  background: var(--accent-soft);
 }
 
 /* Treatment blocks */
 
-h1 { font-size: 1.6rem; margin: 12px 0 20px; }
-h2 { font-size: 1.15rem; margin: 0 0 6px; }
+h1 { font-size: 1.7rem; margin: 14px 0 20px; }
+h2 { font-size: 1.2rem; margin: 0 0 6px; }
 
 .treatment {
-  padding: 18px 0;
+  padding: 22px 0;
   border-top: 1px solid var(--line);
 }
 
@@ -156,7 +169,7 @@ h2 { font-size: 1.15rem; margin: 0 0 6px; }
 
 .treatment h2 { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
 
-.price { color: var(--accent-dark); font-weight: 600; white-space: nowrap; font-size: 0.95rem; }
+.price { color: var(--gold-dark); font-weight: 600; white-space: nowrap; font-size: 0.95rem; }
 
 .sub-prices { color: var(--muted); font-size: 0.9rem; margin: 6px 0 0; }
 
@@ -186,7 +199,7 @@ h2 { font-size: 1.15rem; margin: 0 0 6px; }
 .promo-note { color: var(--muted); font-style: italic; margin-top: -8px; }
 
 blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--gold);
   margin: 20px 0;
   padding-left: 14px;
   color: var(--muted);
@@ -228,14 +241,16 @@ blockquote {
 
 .site-header + main + .site-footer,
 .site-footer {
-  border-top: 1px solid var(--line);
-  padding: 20px;
+  border-top: 1px solid rgba(246, 247, 250, 0.14);
+  padding: 32px 20px 24px;
   text-align: center;
-  color: var(--muted);
+  color: rgba(246, 247, 250, 0.75);
   font-size: 0.85rem;
+  background: var(--ink);
 }
-.site-footer p { margin: 6px 0; }
-.site-footer a { color: var(--muted); }
+.site-footer p { margin: 8px 0; }
+.site-footer a { color: rgba(246, 247, 250, 0.75); }
+.site-footer a:hover { color: #fff; }
 
 /* Landing pages: no nav, single CTA */
 
@@ -252,11 +267,11 @@ body.lp { background: var(--bg); }
   padding: 32px 24px;
 }
 .lp-logo { margin-bottom: 20px; }
-.lp-main h1 { font-size: 1.8rem; margin-bottom: 10px; }
+.lp-main h1 { font-size: 1.9rem; margin-bottom: 10px; }
 .lp-blurb { color: var(--muted); margin-bottom: 16px; }
 .lp-price { font-size: 1.4rem; margin-bottom: 20px; }
 .lp-phone { margin-top: 16px; }
-.lp-phone a { text-decoration: none; }
+.lp-phone a { text-decoration: none; color: var(--ink); font-weight: 600; }
 
 @media (min-width: 600px) {
   :root { font-size: 18px; }
