@@ -228,6 +228,7 @@ main { display: block; }
 }
 .treat-list a .arrow { color: var(--accent-dark); font-weight: 400; }
 .treat-list a:hover { color: var(--accent-dark); }
+.treat-list li small { display: block; color: var(--muted); font-size: 0.82rem; font-weight: 400; padding: 0 0 12px; }
 
 /* Treatment detail cards (treatment pages) */
 
