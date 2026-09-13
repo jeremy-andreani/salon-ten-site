@@ -1,0 +1,45 @@
+# Salon Ten static-site cut-over redirects
+# Old WordPress URL -> New static URL
+# Usable as .htaccess mod_rewrite rules once dropped into the site root (uncomment RewriteEngine On if not already set elsewhere).
+#
+# RewriteEngine On
+#
+# KEPT LIVE — no redirect (2026-09-13): these four paths are Google Ads
+# Final URLs for the live "Skin Treatments Lake Macquarie" campaign and now
+# serve dedicated ad-matched landing pages at that exact folder path, so the
+# campaign never needs editing. Do not redirect them.
+# ^specialised-facial-treatments/?$ -> serves specialised-facial-treatments/index.html (LED Light Therapy ad group)
+# ^comprehensive-skin-assessment/?$ -> serves comprehensive-skin-assessment/index.html (Skin Consultation ad group)
+# ^skin-microneedling/?$            -> serves skin-microneedling/index.html (Skin Needling ad group)
+# ^relaxing-facials/?$              -> serves relaxing-facials/index.html (Anti-Aging Facials ad group)
+RewriteRule ^massage/?$ /massage.html [R=301,L]
+RewriteRule ^spa-packages/?$ /packages.html [R=301,L]
+RewriteRule ^eyes/?$ /eyes.html [R=301,L]
+RewriteRule ^hair-removal/?$ /hair-removal.html [R=301,L]
+RewriteRule ^hands-feet/?$ /pedicures.html [R=301,L]
+RewriteRule ^tanning/?$ /tanning.html [R=301,L]
+RewriteRule ^ear-piercing/?$ /ear-piercing.html [R=301,L]
+RewriteRule ^promotions/?$ /promotions.html [R=301,L]
+RewriteRule ^about/?$ /about.html [R=301,L]
+RewriteRule ^our-team/?$ /team.html [R=301,L]
+RewriteRule ^faq/?$ /faq.html [R=301,L]
+RewriteRule ^contact/?$ /contact.html [R=301,L]
+#
+# Old URL -> New URL (plain reference table)
+# /                                    -> / (new home)
+# /specialised-facial-treatments/      -> KEPT LIVE, serves specialised-facial-treatments/index.html (ad landing page)
+# /comprehensive-skin-assessment/      -> KEPT LIVE, serves comprehensive-skin-assessment/index.html (ad landing page)
+# /skin-microneedling/                 -> KEPT LIVE, serves skin-microneedling/index.html (ad landing page)
+# /relaxing-facials/                   -> KEPT LIVE, serves relaxing-facials/index.html (ad landing page)
+# /massage/                            -> /massage.html
+# /spa-packages/                       -> /packages.html
+# /eyes/                               -> /eyes.html
+# /hair-removal/                       -> /hair-removal.html
+# /hands-feet/                         -> /pedicures.html
+# /tanning/                            -> /tanning.html
+# /ear-piercing/                       -> /ear-piercing.html
+# /promotions/                         -> /promotions.html
+# /about/                              -> /about.html
+# /our-team/                           -> /team.html
+# /faq/                                -> /faq.html
+# /contact/                            -> /contact.html
