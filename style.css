@@ -238,6 +238,8 @@ main { display: block; }
 .price { color: var(--gold-dark); font-weight: 600; white-space: nowrap; font-size: 0.95rem; }
 .sub-prices { color: var(--muted); font-size: 0.9rem; margin: 6px 0 0; }
 .duration { color: var(--muted); font-size: 0.9rem; margin: 4px 0 10px; }
+.ideal-for { color: var(--muted); font-size: 0.9rem; margin: 12px 0 0; }
+.ideal-for strong { color: var(--ink); font-weight: 600; }
 
 .treatment-img { border-radius: var(--radius); margin-bottom: 10px; max-height: 280px; width: 100%; object-fit: cover; }
 .img-caption { font-size: 0.8rem; color: var(--muted); text-align: center; margin: -6px 0 10px; font-style: italic; }
