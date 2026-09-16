@@ -237,6 +237,7 @@ main { display: block; }
 .treatment:first-of-type { border-top: none; }
 .treatment h2 { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 1.2rem; }
 .price { color: var(--gold-dark); font-weight: 600; white-space: nowrap; font-size: 0.95rem; }
+.page-intro h1 .price { margin-left: 12px; }
 .sub-prices { color: var(--muted); font-size: 0.9rem; margin: 6px 0 0; }
 .duration { color: var(--muted); font-size: 0.9rem; margin: 4px 0 10px; }
 .ideal-for { color: var(--muted); font-size: 0.9rem; margin: 12px 0 0; }
