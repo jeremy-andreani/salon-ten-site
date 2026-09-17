@@ -102,7 +102,7 @@ Keep the Google Ads tag block on every page, unchanged.
   <div class="wrap foot-grid">
     <div>
       <div class="foot-brand">Salon Ten</div>
-      <p>A boutique skin, beauty and body salon in Mount Hutton, servicing Lake Macquarie and Newcastle.</p>
+      <p>A boutique skin, beauty and body salon in Mount Hutton, servicing Lake Macquarie and Newcastle since 2010.</p>
     </div>
     <div>
       <h4>EXPLORE</h4>
