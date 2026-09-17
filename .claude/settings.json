@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)"
+    ]
+  },
+  "autoMode": {
+    "environment": [
+      "$defaults",
+      "This repository is a PREVIEW site, not production. It publishes to a github.io address that exists so the salon owner can review draft changes. No customer-facing domain points at it, and there is no build, release or deploy pipeline behind it.",
+      "Pushing to the main branch here is the ordinary way to show the owner a change. It is not a production deploy and must not be treated as one.",
+      "The repository owner has confirmed this and asked that pushes to main not be blocked."
+    ]
+  }
+}
