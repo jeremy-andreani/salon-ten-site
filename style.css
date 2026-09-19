@@ -245,6 +245,8 @@ main { display: block; }
 .also-known { color: var(--muted); font-size: 0.9rem; font-style: italic; margin: 4px 0 0; }
 
 .treatment-img { border-radius: var(--radius); margin-bottom: 10px; max-height: 280px; width: 100%; object-fit: cover; }
+/* Promotions page: show the whole promo artwork, never cropped */
+.promo-img { max-height: none; width: auto; max-width: 100%; height: auto; object-fit: contain; display: block; margin: 0 auto 10px; }
 .img-caption { font-size: 0.8rem; color: var(--muted); text-align: center; margin: -6px 0 10px; font-style: italic; }
 
 .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
