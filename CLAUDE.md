@@ -184,7 +184,6 @@ caption underneath it:
 - `tanning.html`
 - `dermaplaning.html`
 - `hair-removal.html`
-- `relaxing-facials.html`
 - `ear-piercing.html`
 - `cosmeceutical-facials.html`
 - `eyes.html`
