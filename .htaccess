@@ -1,0 +1,29 @@
+# Salon Ten static-site cut-over redirects
+# Generated from redirects.txt (2026-09-24). Old WordPress URL -> new static URL.
+
+RewriteEngine On
+
+# KEPT LIVE — do not redirect (2026-09-13 decision, unchanged): these four paths
+# are Google Ads Final URLs for the live "Skin Treatments Lake Macquarie" campaign.
+# Each has its own folder with an index.html, so Apache serves it directly and
+# the campaign never needs editing:
+#   /specialised-facial-treatments/  -> specialised-facial-treatments/index.html
+#   /comprehensive-skin-assessment/  -> comprehensive-skin-assessment/index.html
+#   /skin-microneedling/             -> skin-microneedling/index.html
+#   /relaxing-facials/               -> relaxing-facials/index.html
+
+RewriteRule ^massage/?$ /massage.html [R=301,L]
+RewriteRule ^spa-packages/?$ /packages.html [R=301,L]
+RewriteRule ^eyes/?$ /eyes.html [R=301,L]
+RewriteRule ^hair-removal/?$ /hair-removal.html [R=301,L]
+RewriteRule ^hands-feet/?$ /pedicures.html [R=301,L]
+RewriteRule ^tanning/?$ /tanning.html [R=301,L]
+RewriteRule ^ear-piercing/?$ /ear-piercing.html [R=301,L]
+RewriteRule ^promotions/?$ /promotions.html [R=301,L]
+RewriteRule ^about/?$ /about.html [R=301,L]
+RewriteRule ^our-team/?$ /team.html [R=301,L]
+RewriteRule ^faq/?$ /faq.html [R=301,L]
+RewriteRule ^contact/?$ /contact.html [R=301,L]
+
+# Clean 404 instead of a bare Apache error page (add a 404.html if one gets built)
+# ErrorDocument 404 /404.html
