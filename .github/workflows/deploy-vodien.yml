@@ -1,0 +1,92 @@
+name: Deploy to Vodien
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never interrupt an upload halfway through or run two uploads together.
+concurrency:
+  group: salon-ten-vodien-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Get the latest master copy
+        uses: actions/checkout@v6
+        with:
+          # A manual rerun must not accidentally publish an older revision.
+          ref: main
+          persist-credentials: false
+
+      - name: Build and check the website files
+        run: python3 .github/scripts/build_site.py "$RUNNER_TEMP/salon-ten-site"
+
+      - name: Check the one-time Vodien connection
+        shell: bash
+        env:
+          VODIEN_FTP_SERVER: ${{ secrets.VODIEN_FTP_SERVER }}
+          VODIEN_FTP_USERNAME: ${{ secrets.VODIEN_FTP_USERNAME }}
+          VODIEN_FTP_PASSWORD: ${{ secrets.VODIEN_FTP_PASSWORD }}
+        run: |
+          missing=0
+          for key in VODIEN_FTP_SERVER VODIEN_FTP_USERNAME VODIEN_FTP_PASSWORD; do
+            if [[ -z "${!key}" ]]; then
+              echo "::error::Add repository secret $key in Settings > Secrets and variables > Actions."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Upload changed website files to public_html
+        uses: SamKirkland/FTP-Deploy-Action@110f9186c050f71550953127052e77650219c287 # v4.4.0
+        with:
+          server: ${{ secrets.VODIEN_FTP_SERVER }}
+          username: ${{ secrets.VODIEN_FTP_USERNAME }}
+          password: ${{ secrets.VODIEN_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          security: strict
+          local-dir: ${{ runner.temp }}/salon-ten-site/
+          # REQUIRED: this FTP account's home is /home/<cpanel-user>/public_html.
+          # Its FTP root / therefore IS public_html/. Do not append public_html/.
+          server-dir: ./
+          state-name: .salon-ten-vodien-sync-state.json
+          dangerous-clean-slate: false
+          timeout: 60000
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules
+            **/node_modules/**
+            **/old-wordpress
+            **/old-wordpress/**
+            **/cgi-bin
+            **/cgi-bin/**
+            **/.well-known
+            **/.well-known/**
+            **/new-site-test
+            **/new-site-test/**
+            **/.github
+            **/.github/**
+            **/.claude
+            **/.claude/**
+            **/CLAUDE.md
+            **/README*
+            **/*.md
+            **/.env*
+            **/.nojekyll
+            **/CNAME
+            **/screenshots
+            **/screenshots/**
+            **/lp
+            **/lp/**
+            **/redirects.txt
+            **/*.zip
