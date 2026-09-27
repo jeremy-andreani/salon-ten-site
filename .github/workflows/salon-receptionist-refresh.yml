@@ -1,0 +1,49 @@
+name: Refresh Anne's salon knowledge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**'
+      - '!README*'
+      - '!CLAUDE.md'
+      - '!screenshots/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salon-ten-anne-knowledge
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check whether auto-refresh is enabled
+        id: enabled
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          if [[ -z "$ELEVENLABS_API_KEY" ]]; then
+            echo '::notice::Anne auto-refresh is disabled: ELEVENLABS_API_KEY repository secret is absent.'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Read the latest main revision
+        if: steps.enabled.outputs.ready == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Regenerate facts and replace the verified knowledge document
+        if: steps.enabled.outputs.ready == 'true'
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: python3 .github/receptionist/refresh_kb.py --site-dir .
