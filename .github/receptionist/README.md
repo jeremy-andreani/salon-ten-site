@@ -11,8 +11,9 @@ Each run regenerates the website treatment links, downloads Kitomba's public ser
 replaces and verifies Anne's ElevenLabs knowledge document, and builds and deploys the Twilio
 Functions with both lookup assets. Public catalogue requests do not read clients or bookings.
 The Functions deploy reuses the production Sync service even on an empty runner, so existing
-message records and booking cooldowns stay in place. It never writes or deletes
-SALON_OWNER_NOTIFY_NUMBER and verifies that the live setting is unchanged.
+message records and booking cooldowns stay in place. With `--preserve-owner-notify`, it never
+writes or deletes `SALON_OWNER_NOTIFY_NUMBER` or `SALON_BOOKING_LINK_NOTIFY_NUMBER`, and
+verifies both live settings are unchanged.
 
 Staff-only facts belong in the Staff clarifications (hand-maintained, keep on refresh) section
 of knowledge-base.md. The complete section is preserved verbatim. Existing Unknown entries
@@ -34,8 +35,16 @@ Auto-refresh requires these repository secrets: ELEVENLABS_API_KEY, TWILIO_ACCOU
 TWILIO_AUTH_TOKEN and SALON_WEBHOOK_SECRET. The sender number is reused from the existing
 production Twilio environment. The local credentials are in
 ~/.config/salon-receptionist/keys.env. Never copy their values into a repository file or log.
-SALON_OWNER_NOTIFY_NUMBER is intentionally not a workflow input or repository secret.
+Neither notification list is a workflow input or repository secret.
 Do not enable a second copy of this automation in conductor against the same agent.
+
+Temporary booking-link alerts use `SALON_BOOKING_LINK_NOTIFY_NUMBER` independently of callback
+alerts. After Twilio accepts a customer's SMS, each configured recipient gets the caller number,
+Sydney local time, service labels (or "general booking page") and the exact link sent. Empty or
+unset disables these alerts. Notification failures are logged and do not change the caller's
+response; the extra waiting is capped at two seconds. Dry runs send no messages.
+Manage the list in `~/.config/salon-receptionist/keys.env` and deploy locally without
+`--preserve-owner-notify` to enable, change or clear it. Website deployments preserve the setting.
 
 verify-deployment.py fetches the new document's actual content and compares it with the
 generated file, confirms the production build includes the uploaded Function and asset

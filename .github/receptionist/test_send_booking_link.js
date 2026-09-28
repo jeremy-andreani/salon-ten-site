@@ -10,17 +10,25 @@ const FUNCTIONS = path.join(__dirname, 'functions');
 const SERVICES = JSON.parse(fs.readFileSync(path.join(FUNCTIONS, 'service-links.generated.json'), 'utf8')).services;
 const GENERIC_URL = 'kitomba.com/bookings/salonten';
 
-function harness() {
+function harness(options = {}) {
+  const logs = [];
+  const logger = { log: (...args) => logs.push(args.join(' ')), warn: (...args) => logs.push(args.join(' ')) };
+  const Clock = options.now ? class extends Date {
+    constructor(...args) { super(...(args.length ? args : [options.now])); }
+    static now() { return new Date(options.now).getTime(); }
+  } : Date;
   class Response {
     constructor() { this.headers = {}; }
     setStatusCode(status) { this.status = status; }
     appendHeader(key, value) { this.headers[key] = value; }
     setBody(body) { this.body = body; }
   }
-  const shared = { module: { exports: {} }, require, Buffer, console, Twilio: { Response } };
+  const shared = { module: { exports: {} }, require, Buffer, console: logger, Twilio: { Response } };
   vm.runInNewContext(fs.readFileSync(path.join(FUNCTIONS, 'common.private.js'), 'utf8'), shared);
+  if (options.wrapSendSms) shared.module.exports.sendSms = options.wrapSendSms(shared.module.exports.sendSms);
   const sandbox = {
-    exports: {}, console,
+    exports: {}, console: logger, Date: Clock,
+    setTimeout: options.setTimeout || setTimeout, clearTimeout: options.clearTimeout || clearTimeout,
     Runtime: { getAssets: () => ({
       '/common.js': { path: 'test-common' },
       '/service-links.json': { path: path.join(FUNCTIONS, 'service-links.generated.json') },
@@ -33,7 +41,10 @@ function harness() {
   const sent = [];
   const maps = new Map();
   const client = {
-    messages: { create: async (message) => { sent.push(message); } },
+    messages: { create: async (message) => {
+      sent.push(message);
+      if (options.createMessage) return options.createMessage(message);
+    } },
     sync: { v1: { services: () => ({ syncMaps: (name) => {
       if (!maps.has(name)) maps.set(name, new Map());
       const items = maps.get(name);
@@ -50,6 +61,7 @@ function harness() {
     SALON_FROM_NUMBER: '+61400000000',
     SYNC_SERVICE_SID: 'test-sync-service',
     getTwilioClient: () => client,
+    ...options.context,
   };
   const invoke = (body, dryRun = false) => new Promise((resolve, reject) => {
     const event = {
@@ -62,7 +74,7 @@ function harness() {
     };
     sandbox.exports.handler(context, event, (error, result) => error ? reject(error) : resolve(result)).catch(reject);
   });
-  return { invoke, sent, maps };
+  return { invoke, sent, maps, logs };
 }
 
 test('two or more treatments send one general link with instructions to add every service', async () => {
@@ -266,4 +278,147 @@ test('an invented placeholder number is refused before any cooldown or SMS', asy
     assert.equal(h.maps.size, 0);
     assert.equal(h.sent.length, 0);
   }
+});
+
+const CALLER = '+61400000001';
+const NOTIFY_FIRST = '+61400000002';
+const NOTIFY_SECOND = '+61400000003';
+const NOTIFY_CONTEXT = { SALON_BOOKING_LINK_NOTIFY_NUMBER: `${NOTIFY_FIRST},${NOTIFY_SECOND}` };
+
+test('booking alerts are independently disabled when their setting is unset or empty', async () => {
+  for (const value of [undefined, '', ' , , ']) {
+    const h = harness({ context: { SALON_OWNER_NOTIFY_NUMBER: NOTIFY_FIRST, SALON_BOOKING_LINK_NOTIFY_NUMBER: value } });
+    const result = await h.invoke({});
+    assert.equal(result.body.status, 'accepted');
+    assert.equal(h.sent.length, 1);
+    assert.equal(h.sent[0].to, CALLER);
+  }
+});
+
+test('each distinct recipient is notified only after the caller SMS is accepted', async () => {
+  let acceptCaller;
+  const accepted = new Promise((resolve) => { acceptCaller = resolve; });
+  const h = harness({
+    now: '2026-09-28T06:59:00.000Z',
+    context: { SALON_BOOKING_LINK_NOTIFY_NUMBER: ` ${NOTIFY_FIRST}, ,${NOTIFY_SECOND},${NOTIFY_FIRST} ` },
+    createMessage: (message) => message.to === CALLER ? accepted : undefined,
+  });
+  const pending = h.invoke({ service: 'skin needling' });
+  await new Promise(setImmediate);
+  assert.deepEqual(h.sent.map((m) => m.to), [CALLER]);
+  acceptCaller();
+  const result = await pending;
+  assert.equal(result.body.status, 'accepted');
+  assert.deepEqual(h.sent.map((m) => m.to), [CALLER, NOTIFY_FIRST, NOTIFY_SECOND]);
+  for (const message of h.sent.slice(1)) {
+    assert.equal(message.from, h.sent[0].from);
+    assert.equal(message.body, `Anne sent a booking link to ${CALLER} at 4:59 pm AEST: Skin Microneedling\n${SERVICES.microneedling.url}`);
+  }
+});
+
+test('booking alert time follows Sydney daylight saving and uses the exact combined link', async () => {
+  const h = harness({ now: '2026-12-01T00:05:00.000Z', context: NOTIFY_CONTEXT });
+  await h.invoke({ multiple_services: true, services: ['lash tint', 'brow tint', 'brow wax', 'Brazilian'] });
+  const link = KEL_URL([byLabel('Brow Wax, Brow Tint, Lash Tint').id, byLabel('Brazilian Wax').id]);
+  assert.ok(h.sent[0].body.includes(link));
+  for (const message of h.sent.slice(1)) {
+    assert.equal(message.body, `Anne sent a booking link to ${CALLER} at 11:05 am AEDT: Brow Wax, Brow Tint, Lash Tint and Brazilian Wax\n${link}`);
+  }
+});
+
+test('booking alerts cover single catalogue and combined-service links', async () => {
+  for (const body of [
+    { service: 'lash tint' },
+    { service: 'brow wax and tint' },
+    { multiple_services: true, services: ['brow wax', 'brow tint'] },
+  ]) {
+    const h = harness({ context: NOTIFY_CONTEXT });
+    const result = await h.invoke(body);
+    assert.equal(result.body.link_type, 'treatment');
+    const caller = /Book your (.+) online here: (.+)\n/.exec(h.sent[0].body);
+    assert.ok(caller);
+    assert.equal(h.sent.length, 3);
+    assert.ok(h.sent[1].body.endsWith(`: ${caller[1]}\n${caller[2]}`));
+  }
+});
+
+test('generic and unmatched requests notify with the general booking page and exact short link', async () => {
+  for (const body of [{}, { service: 'unknown service' }, { multiple_services: true, services: ['skin needling', 'unknown service'] }]) {
+    const h = harness({ context: NOTIFY_CONTEXT });
+    await h.invoke(body);
+    assert.equal(h.sent.length, 3);
+    assert.ok(h.sent[1].body.endsWith(`: general booking page\n${GENERIC_URL}`));
+  }
+});
+
+test('rejected and unconfirmed caller SMS attempts never notify owners', async () => {
+  for (const error of [{ status: 400 }, new Error('transport failure')]) {
+    const h = harness({ context: NOTIFY_CONTEXT, createMessage: async () => { throw error; } });
+    const result = await h.invoke({});
+    assert.equal(result.status, 502);
+    assert.deepEqual(h.sent.map((m) => m.to), [CALLER]);
+  }
+});
+
+test('a failed notification does not prevent another recipient or change the caller response', async () => {
+  for (const error of [{ status: 400, message: 'provider-private-detail' }, new Error('provider-private-detail')]) {
+    const h = harness({ context: NOTIFY_CONTEXT, createMessage: async (message) => {
+      if (message.to === NOTIFY_FIRST) throw error;
+    } });
+    const result = await h.invoke({});
+    assert.equal(result.status, 200);
+    assert.equal(result.body.status, 'accepted');
+    assert.deepEqual(h.sent.map((m) => m.to), [CALLER, NOTIFY_FIRST, NOTIFY_SECOND]);
+    assert.ok(h.logs.some((line) => line.includes('1/2 accepted')));
+    assert.doesNotMatch(h.logs.join('\n'), /\+614|kitomba|provider-private-detail/);
+  }
+});
+
+test('unexpected notification exceptions are caught without cancelling other recipients', async () => {
+  const h = harness({ context: NOTIFY_CONTEXT, wrapSendSms: (send) => async (client, from, to, body) => {
+    if (to === NOTIFY_FIRST) throw new Error('unexpected helper failure');
+    return send(client, from, to, body);
+  } });
+  const result = await h.invoke({});
+  assert.equal(result.status, 200);
+  assert.deepEqual(h.sent.map((m) => m.to), [CALLER, NOTIFY_SECOND]);
+  assert.ok(h.logs.some((line) => line.includes('notification failed')));
+});
+
+test('stalled notifications have a bounded wait and still return caller success', async () => {
+  const h = harness({
+    context: NOTIFY_CONTEXT,
+    createMessage: (message) => message.to === CALLER ? undefined : new Promise(() => {}),
+    setTimeout: (callback, delay) => {
+      assert.equal(delay, 2000);
+      return setImmediate(callback);
+    },
+    clearTimeout: clearImmediate,
+  });
+  const result = await h.invoke({});
+  assert.equal(result.status, 200);
+  assert.equal(result.body.status, 'accepted');
+  assert.equal(h.sent.length, 3);
+  assert.ok(h.logs.some((line) => line.includes('notifications timed out')));
+});
+
+test('invalid notification settings cannot fail the caller SMS', async () => {
+  for (const value of [123, `invalid,${NOTIFY_FIRST}`]) {
+    const h = harness({ context: { SALON_BOOKING_LINK_NOTIFY_NUMBER: value } });
+    const result = await h.invoke({});
+    assert.equal(result.body.status, 'accepted');
+    assert.equal(h.sent.length, typeof value === 'string' ? 2 : 1);
+    assert.ok(h.logs.length);
+  }
+});
+
+test('enabled alerts send nothing for dry runs, validation failures or repeated requests', async () => {
+  const h = harness({ context: NOTIFY_CONTEXT });
+  assert.equal((await h.invoke({}, true)).body.status, 'dry_run');
+  assert.equal((await h.invoke({ caller_number: 'bad' })).status, 400);
+  assert.equal(h.sent.length, 0);
+  assert.equal((await h.invoke({})).body.status, 'accepted');
+  assert.equal(h.sent.length, 3);
+  assert.equal((await h.invoke({})).status, 429);
+  assert.equal(h.sent.length, 3);
 });

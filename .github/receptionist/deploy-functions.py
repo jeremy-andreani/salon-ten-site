@@ -8,7 +8,7 @@ environment variables. Reads credentials from the environment or
 
   python3 deploy-functions.py            deploy
   python3 deploy-functions.py --dry-run  show what would be deployed; no API writes
-  python3 deploy-functions.py --preserve-owner-notify  deploy without changing owner alerts
+  python3 deploy-functions.py --preserve-owner-notify  preserve callback and booking alerts
 """
 import argparse, base64, json, os, shlex, sys, time, urllib.error, urllib.parse, urllib.request, uuid
 from pathlib import Path
@@ -29,6 +29,7 @@ ASSETS = [("common", "functions/common.private.js", "/common.js", "application/j
           ("kitomba-services", "functions/kitomba-services.generated.json", "/kitomba-services.json", "application/json")]
 SYNC_MAPS = ["booking-cooldown", "booking-cooldown-dryrun"]
 SYNC_LISTS = ["callback-messages", "callback-messages-dryrun"]
+NOTIFY_KEYS = ("SALON_OWNER_NOTIFY_NUMBER", "SALON_BOOKING_LINK_NOTIFY_NUMBER")
 
 
 def load_keys():
@@ -43,7 +44,7 @@ def load_keys():
         parts = shlex.split(value, comments=True)
         values[key.strip()] = parts[0] if parts else ""
     for key in ("TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_FROM_NUMBER",
-                "SALON_WEBHOOK_SECRET", "SALON_OWNER_NOTIFY_NUMBER"):
+                "SALON_WEBHOOK_SECRET", *NOTIFY_KEYS):
         if key in os.environ:
             values[key] = os.environ[key]
     return values
@@ -90,22 +91,24 @@ class Twilio:
         return self.call("POST", list_url, fields), True
 
 
-def set_variables(tw, var_url, existing, variables, owner, preserve_owner):
-    """CI never writes or deletes the owner setting, including when it is absent locally."""
+def set_variables(tw, var_url, existing, variables, notifications, preserve_owner):
+    """CI preserves both alert settings; local deploys manage the two lists independently."""
     variables = dict(variables)
-    if owner and not preserve_owner:
-        variables["SALON_OWNER_NOTIFY_NUMBER"] = owner
+    if not preserve_owner:
+        variables.update({key: value for key, value in notifications.items() if value})
     for key, value in variables.items():
         if key in existing:
             tw.call("POST", f"{var_url}/{existing[key]['sid']}", {"Value": value})
         else:
             tw.call("POST", var_url, {"Key": key, "Value": value})
-    if not preserve_owner and not owner and "SALON_OWNER_NOTIFY_NUMBER" in existing:
-        tw.call("DELETE", f"{var_url}/{existing['SALON_OWNER_NOTIFY_NUMBER']['sid']}")
+    if not preserve_owner:
+        for key, value in notifications.items():
+            if not value and key in existing:
+                tw.call("DELETE", f"{var_url}/{existing[key]['sid']}")
 
 
-def owner_setting(variables):
-    value = variables.get("SALON_OWNER_NOTIFY_NUMBER")
+def notification_setting(variables, key):
+    value = variables.get(key)
     return (value is not None, value.get("value") if value else None)
 
 
@@ -113,7 +116,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--preserve-owner-notify", action="store_true",
-                        help="Never write or delete the live owner notification setting")
+                        help="Never write or delete either live callback or booking-link notification setting")
     args = parser.parse_args(argv)
     keys = load_keys()
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
@@ -121,8 +124,8 @@ def main(argv=None):
         if not keys.get(k):
             raise SystemExit(f"Missing {k} in the environment or {KEYS}")
     from_number = keys.get("TWILIO_FROM_NUMBER") or state.get("twilio_number", "")
-    owner = keys.get("SALON_OWNER_NOTIFY_NUMBER", "")
-    print("Owner notification setting:", "preserved" if args.preserve_owner_notify else "managed from local configuration")
+    notifications = {key: keys.get(key, "") for key in NOTIFY_KEYS}
+    print("Callback and booking-link notification settings:", "preserved" if args.preserve_owner_notify else "managed from local configuration")
     if args.dry_run:
         print("[dry-run] would ensure Sync service, maps", SYNC_MAPS, "lists", SYNC_LISTS)
         print("[dry-run] would upload", [f for f, _ in FUNCTIONS], "and assets", [r for _, _, r, _ in ASSETS], "build on", RUNTIME, "and deploy")
@@ -136,7 +139,7 @@ def main(argv=None):
     env, _ = tw.find_or_create(f"{SL}/{svc['sid']}/Environments", "unique_name", "production", {"UniqueName": "production", "DomainSuffix": "prod"})
     var_url = f"{SL}/{svc['sid']}/Environments/{env['sid']}/Variables"
     existing = {v["key"]: v for v in tw.call("GET", var_url + "?PageSize=100")["variables"]}
-    original_owner = owner_setting(existing)
+    original_notifications = {key: notification_setting(existing, key) for key in NOTIFY_KEYS}
     from_number = from_number or existing.get("SALON_FROM_NUMBER", {}).get("value", "")
     if not from_number:
         raise SystemExit("TWILIO_FROM_NUMBER is absent and the live environment has no SALON_FROM_NUMBER")
@@ -180,17 +183,18 @@ def main(argv=None):
         raise SystemExit(f"Build {build['sid']} ended with status {status}")
 
     variables = {"SALON_WEBHOOK_SECRET": keys["SALON_WEBHOOK_SECRET"], "SALON_FROM_NUMBER": from_number, "SYNC_SERVICE_SID": sync["sid"]}
-    set_variables(tw, var_url, existing, variables, owner, args.preserve_owner_notify)
+    set_variables(tw, var_url, existing, variables, notifications, args.preserve_owner_notify)
 
     tw.call("POST", f"{SL}/{svc['sid']}/Environments/{env['sid']}/Deployments", {"BuildSid": build["sid"]})
     live_env = tw.call("GET", f"{SL}/{svc['sid']}/Environments/{env['sid']}")
     if live_env.get("build_sid") != build["sid"]:
         raise SystemExit("Deployment GET did not confirm the new build is live")
-    if args.preserve_owner_notify:
-        live_vars = {v["key"]: v for v in tw.call("GET", var_url + "?PageSize=100")["variables"]}
-        if owner_setting(live_vars) != original_owner:
-            raise SystemExit("Owner notification setting changed during deployment; no owner write was attempted")
-        print("Verified SALON_OWNER_NOTIFY_NUMBER is unchanged.")
+    live_vars = {v["key"]: v for v in tw.call("GET", var_url + "?PageSize=100")["variables"]}
+    for key in NOTIFY_KEYS:
+        expected = original_notifications[key] if args.preserve_owner_notify else (bool(notifications[key]), notifications[key] or None)
+        if notification_setting(live_vars, key) != expected:
+            raise SystemExit(f"Deployment GET did not confirm the expected {key} setting")
+        print(f"Verified {key} is " + ("unchanged." if args.preserve_owner_notify else "configured as requested."))
     base = f"https://{env['domain_name']}"
     state.update({"sync_service_sid": sync["sid"], "serverless_service_sid": svc["sid"], "serverless_environment_sid": env["sid"],
                   "functions_base_url": base, "functions_build_sid": build["sid"],

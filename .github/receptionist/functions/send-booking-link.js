@@ -282,6 +282,47 @@ function joinLabels(labels) {
   return `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`;
 }
 
+async function notifyBookingLink(context, client, number, services, link) {
+  let timer;
+  try {
+    // Separate from callback-message alerts so either temporary recipient list can be disabled.
+    const recipients = [...new Set((context.SALON_BOOKING_LINK_NOTIFY_NUMBER || '')
+      .split(',').map((s) => s.trim()).filter(Boolean))];
+    if (!recipients.length) return;
+    const time = new Date().toLocaleTimeString('en-AU', {
+      timeZone: 'Australia/Sydney', hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+    });
+    const sms = `Anne sent a booking link to ${number} at ${time}: ${services}\n${link}`;
+    // Every recipient gets one attempt; failures cannot change the caller's accepted result.
+    const sends = Promise.all(recipients.map(async (to) => {
+      if (!common.isE164(to)) {
+        console.warn('Salon booking link notification skipped an invalid recipient setting.');
+        return 'rejected';
+      }
+      try {
+        return await common.sendSms(client, context.SALON_FROM_NUMBER, to, sms);
+      } catch (err) {
+        console.warn('Salon booking link notification failed; caller SMS is already accepted.');
+        return 'unconfirmed';
+      }
+    }));
+    // Bound the optional work so a stalled notification does not consume the Function timeout.
+    const results = await Promise.race([sends, new Promise((resolve) => {
+      timer = setTimeout(() => resolve(null), 2000);
+    })]);
+    if (!results) {
+      console.warn('Salon booking link notifications timed out; no retry was attempted.');
+      return;
+    }
+    const accepted = results.filter((r) => r === 'accepted').length;
+    console.log(`Salon booking link notifications: ${accepted}/${results.length} accepted.`);
+  } catch (err) {
+    console.warn('Salon booking link notification failed; caller SMS is already accepted.');
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 exports.handler = async function (context, event, callback) {
   const { reply } = common;
   const authError = common.authenticate(context, event);
@@ -366,6 +407,11 @@ exports.handler = async function (context, event, callback) {
     return reply(callback, 200, { status: 'dry_run', message: 'Validated and cooldown reserved in the dry-run map. No SMS was sent.', sms_preview: smsText, link_type: linkType });
 
   const outcome = await common.sendSms(client, context.SALON_FROM_NUMBER, number, smsText);
+  if (outcome === 'accepted') {
+    const services = multiUrl ? joinLabels(chosen.map((m) => m.label)) : single ? single.label : 'general booking page';
+    const link = multiUrl || (single && single.url) || GENERIC_URL_TEXT;
+    await notifyBookingLink(context, client, number, services, link);
+  }
   return outcome === 'accepted'
     ? reply(callback, 200, { status: 'accepted', message: 'The booking SMS was accepted by Twilio for delivery.', link_type: linkType })
     : reply(callback, 502, { error: 'Twilio did not confirm the booking SMS. Delivery is unconfirmed; do not retry for ten minutes.' });
