@@ -18,6 +18,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      site-revision: ${{ steps.revision.outputs.sha }}
     steps:
       - name: Get the latest master copy
         uses: actions/checkout@v6
@@ -25,6 +27,10 @@ jobs:
           # A manual rerun must not accidentally publish an older revision.
           ref: main
           persist-credentials: false
+
+      - name: Record the revision being published
+        id: revision
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Build and check the website files
         run: python3 .github/scripts/build_site.py "$RUNNER_TEMP/salon-ten-site"
@@ -90,3 +96,14 @@ jobs:
             **/lp/**
             **/redirects.txt
             **/*.zip
+
+  refresh-anne:
+    needs: deploy
+    uses: ./.github/workflows/salon-receptionist-refresh.yml
+    with:
+      site-revision: ${{ needs.deploy.outputs.site-revision }}
+    secrets:
+      ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+      TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+      SALON_WEBHOOK_SECRET: ${{ secrets.SALON_WEBHOOK_SECRET }}

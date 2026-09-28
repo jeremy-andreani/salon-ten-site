@@ -1,0 +1,531 @@
+{
+  "generated_from": "https://apps.kitomba.com/api/public/service/salonten (public online-booking catalogue; see refresh_catalogue.py)",
+  "booking_base": "https://apps.kitomba.com/bookings/salonten",
+  "services": [
+    {
+      "id": "890063",
+      "name": "1. Nano Infusion Facial",
+      "label": "Nano Infusion Facial",
+      "category": "Antiaging Facials Treatments",
+      "price": "207.00"
+    },
+    {
+      "id": "1885289",
+      "name": "2. Hyperformance Medi Facial",
+      "label": "Hyperformance Medi Facial",
+      "category": "Antiaging Facials Treatments",
+      "price": "184.00"
+    },
+    {
+      "id": "332732",
+      "name": "3. Microdermabrassion Skin Treatment",
+      "label": "Microdermabrassion Skin Treatment",
+      "category": "Antiaging Facials Treatments",
+      "price": "136.00"
+    },
+    {
+      "id": "1845790",
+      "name": "4. Reveal Medi Peel",
+      "label": "Reveal Medi Peel",
+      "category": "Antiaging Facials Treatments",
+      "price": "129.00"
+    },
+    {
+      "id": "100000000153086834",
+      "name": "1. BBR 1x Face Treatment + Neck, Dec",
+      "label": "BBR 1x Face Treatment + Neck, Dec",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "500.00"
+    },
+    {
+      "id": "100000000153086449",
+      "name": "2. BBR 1x Face +Neck Treatemnt",
+      "label": "BBR 1x Face +Neck Treatemnt",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "350.00"
+    },
+    {
+      "id": "100000000153037948",
+      "name": "3. BBR 1x Face Treatment (only)",
+      "label": "BBR 1x Face Treatment (only)",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "250.00"
+    },
+    {
+      "id": "100000000195518103",
+      "name": "IPL Back",
+      "label": "IPL Back",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "179.00"
+    },
+    {
+      "id": "100000000200183446",
+      "name": "IPL Bikini",
+      "label": "IPL Bikini",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "45.00"
+    },
+    {
+      "id": "100000000195518156",
+      "name": "IPL Chest",
+      "label": "IPL Chest",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "179.00"
+    },
+    {
+      "id": "100000000191723028",
+      "name": "IPL Underarm",
+      "label": "IPL Underarm",
+      "category": "BBR (BBL) / IPL/ Laser",
+      "price": "40.00"
+    },
+    {
+      "id": "297298",
+      "name": "1. Lash Lifting/Perming",
+      "label": "Lash Lifting/Perming",
+      "category": "Brow Waxing and Tinting",
+      "price": "104.00"
+    },
+    {
+      "id": "15822",
+      "name": "2. Brow Wax, Brow Tint, Lash Tint",
+      "label": "Brow Wax, Brow Tint, Lash Tint",
+      "category": "Brow Waxing and Tinting",
+      "price": "79.00"
+    },
+    {
+      "id": "100000000155461751",
+      "name": "3. Brow Wax & Lash Tint",
+      "label": "Brow Wax & Lash Tint",
+      "category": "Brow Waxing and Tinting",
+      "price": "65.00"
+    },
+    {
+      "id": "15815",
+      "name": "4. Brow Wax & Brow Tint",
+      "label": "Brow Wax & Brow Tint",
+      "category": "Brow Waxing and Tinting",
+      "price": "59.00"
+    },
+    {
+      "id": "100000000155461671",
+      "name": "5. Lash Tint & Brow Tint",
+      "label": "Lash Tint & Brow Tint",
+      "category": "Brow Waxing and Tinting",
+      "price": "58.00"
+    },
+    {
+      "id": "15845",
+      "name": "6. Lash Tint",
+      "label": "Lash Tint",
+      "category": "Brow Waxing and Tinting",
+      "price": "32.00"
+    },
+    {
+      "id": "15810",
+      "name": "7. Brow Tint",
+      "label": "Brow Tint",
+      "category": "Brow Waxing and Tinting",
+      "price": "26.00"
+    },
+    {
+      "id": "100000000091813536",
+      "name": "Comprehensive Skin Assessment - Ance/Congestion",
+      "label": "Comprehensive Skin Assessment - Ance/Congestion",
+      "category": "Comprehensive Skin Assessment",
+      "price": "149.00"
+    },
+    {
+      "id": "100000000117402528",
+      "name": "Comprehensive Skin Assessment - Anti-Aging",
+      "label": "Comprehensive Skin Assessment - Anti-Aging",
+      "category": "Comprehensive Skin Assessment",
+      "price": "149.00"
+    },
+    {
+      "id": "100000000117402202",
+      "name": "Comprehensive Skin Assessment - Sensitised Skin",
+      "label": "Comprehensive Skin Assessment - Sensitised Skin",
+      "category": "Comprehensive Skin Assessment",
+      "price": "149.00"
+    },
+    {
+      "id": "100000000117402620",
+      "name": "Comprehensive Skin Assessment- Pigmentation",
+      "label": "Comprehensive Skin Assessment- Pigmentation",
+      "category": "Comprehensive Skin Assessment",
+      "price": "149.00"
+    },
+    {
+      "id": "100000000181380322",
+      "name": "Add on dermaplane to facial",
+      "label": "Add on dermaplane to facial",
+      "category": "Dermaplaning",
+      "price": "82.00"
+    },
+    {
+      "id": "100000000181379918",
+      "name": "Dermaplane Glow",
+      "label": "Dermaplane Glow",
+      "category": "Dermaplaning",
+      "price": "190.00"
+    },
+    {
+      "id": "100000000181379998",
+      "name": "Dermaplane Refresh",
+      "label": "Dermaplane Refresh",
+      "category": "Dermaplaning",
+      "price": "135.00"
+    },
+    {
+      "id": "100000000171489194",
+      "name": "Ear Piercing",
+      "label": "Ear Piercing",
+      "category": "Ear Piercing",
+      "price": "95.00"
+    },
+    {
+      "id": "100000000199556011",
+      "name": "Electrolysis -10 mins",
+      "label": "Electrolysis -10 mins",
+      "category": "Electrolysis",
+      "price": "38.00"
+    },
+    {
+      "id": "100000000199556246",
+      "name": "Electrolysis -20 mins",
+      "label": "Electrolysis -20 mins",
+      "category": "Electrolysis",
+      "price": "74.00"
+    },
+    {
+      "id": "100000000171488813",
+      "name": "Aqua Glow HydraFacial",
+      "label": "Aqua Glow HydraFacial",
+      "category": "Hydradermabrasion",
+      "price": "179.00"
+    },
+    {
+      "id": "100000000155414884",
+      "name": "LED Radiance Reboot Treatment",
+      "label": "LED Radiance Reboot Treatment",
+      "category": "LED Light Therapy Facials",
+      "price": "145.00"
+    },
+    {
+      "id": "15838",
+      "name": "1. Gel pedicure",
+      "label": "Gel pedicure",
+      "category": "Pedicures",
+      "price": "110.00"
+    },
+    {
+      "id": "15857",
+      "name": "2. Polish pedicure",
+      "label": "Polish pedicure",
+      "category": "Pedicures",
+      "price": "100.00"
+    },
+    {
+      "id": "557365",
+      "name": "3. Nude Pedicure",
+      "label": "Nude Pedicure",
+      "category": "Pedicures",
+      "price": "89.00"
+    },
+    {
+      "id": "15835",
+      "name": "Gel manicure",
+      "label": "Gel manicure",
+      "category": "Pedicures",
+      "price": "99.00"
+    },
+    {
+      "id": "100000000093896732",
+      "name": "1. Skin Ritual Spa Facial",
+      "label": "Skin Ritual Spa Facial",
+      "category": "Relaxation Facial Treatments",
+      "price": "207.00"
+    },
+    {
+      "id": "100000000093896620",
+      "name": "2. Organic Spa Facial",
+      "label": "Organic Spa Facial",
+      "category": "Relaxation Facial Treatments",
+      "price": "149.00"
+    },
+    {
+      "id": "100000000093896584",
+      "name": "3. Refresh Skin Facial",
+      "label": "Refresh Skin Facial",
+      "category": "Relaxation Facial Treatments",
+      "price": "110.00"
+    },
+    {
+      "id": "15833",
+      "name": "1. Ultimate Escape Full Body Massage",
+      "label": "Ultimate Escape Full Body Massage",
+      "category": "Relaxation Massage",
+      "price": "172.00"
+    },
+    {
+      "id": "15831",
+      "name": "2. Full Body Relaxation Massage",
+      "label": "Full Body Relaxation Massage",
+      "category": "Relaxation Massage",
+      "price": "132.00"
+    },
+    {
+      "id": "15918",
+      "name": "3. Back Neck and Shoulders Massage",
+      "label": "Back Neck and Shoulders Massage",
+      "category": "Relaxation Massage",
+      "price": "86.00"
+    },
+    {
+      "id": "100000000172262168",
+      "name": "1. Skin Microneedling - Face, Neck & Decollatage",
+      "label": "Skin Microneedling - Face, Neck & Decollatage",
+      "category": "Skin Needling/ Collagen Induction",
+      "price": "599.00"
+    },
+    {
+      "id": "100000000172113330",
+      "name": "2. Skin Microneedling- Face",
+      "label": "Skin Microneedling- Face",
+      "category": "Skin Needling/ Collagen Induction",
+      "price": "329.00"
+    },
+    {
+      "id": "100000000172113820",
+      "name": "3. Skin Microneedling- Neck and Decollatage",
+      "label": "Skin Microneedling- Neck and Decollatage",
+      "category": "Skin Needling/ Collagen Induction",
+      "price": "329.00"
+    },
+    {
+      "id": "100000000097257198",
+      "name": "4. Skin Microneedling In- Salon Initial Consultation",
+      "label": "Skin Microneedling In- Salon Initial Consultation",
+      "category": "Skin Needling/ Collagen Induction",
+      "price": "49.00"
+    },
+    {
+      "id": "100000000102273060",
+      "name": "Free phone consultation for Skin Needling",
+      "label": "Free phone consultation for Skin Needling",
+      "category": "Skin Needling/ Collagen Induction",
+      "price": null
+    },
+    {
+      "id": "15867",
+      "name": "Spray Tanning - with Naked Tan",
+      "label": "Spray Tanning - with Naked Tan",
+      "category": "Spray Tanning",
+      "price": "47.00"
+    },
+    {
+      "id": "100000000186448571",
+      "name": "Reiki Body Reset -with Carlissa",
+      "label": "Reiki Body Reset -with Carlissa",
+      "category": "WELLNESS SPRING OFFERS",
+      "price": "169.00"
+    },
+    {
+      "id": "100000000199245165",
+      "name": "Spring Offer- Skin Renew Facial",
+      "label": "Spring Offer- Skin Renew Facial",
+      "category": "WELLNESS SPRING OFFERS",
+      "price": "242.00"
+    },
+    {
+      "id": "100000000199245251",
+      "name": "Spring Offer- Skin Renew Facial Lite",
+      "label": "Spring Offer- Skin Renew Facial Lite",
+      "category": "WELLNESS SPRING OFFERS",
+      "price": "155.00"
+    },
+    {
+      "id": "100000000199245341",
+      "name": "Spring Offer- The Exhale Ritual",
+      "label": "Spring Offer- The Exhale Ritual",
+      "category": "WELLNESS SPRING OFFERS",
+      "price": "240.00"
+    },
+    {
+      "id": "100000000199245400",
+      "name": "Spring offer- The Exhale Ritual Lite",
+      "label": "Spring offer- The Exhale Ritual Lite",
+      "category": "WELLNESS SPRING OFFERS",
+      "price": "150.00"
+    },
+    {
+      "id": "100000000145695328",
+      "name": "Full Face (No Brows)",
+      "label": "Full Face (No Brows)",
+      "category": "Waxing",
+      "price": "70.00"
+    },
+    {
+      "id": "592170",
+      "name": "Mens Full Leg",
+      "label": "Mens Full Leg",
+      "category": "Waxing",
+      "price": "104.00"
+    },
+    {
+      "id": "15827",
+      "name": "Mens ears & nose waxed plus Brow trim",
+      "label": "Mens ears & nose waxed plus Brow trim",
+      "category": "Waxing",
+      "price": "34.00"
+    },
+    {
+      "id": "42605",
+      "name": "Sides of face",
+      "label": "Sides of face",
+      "category": "Waxing",
+      "price": "34.00"
+    },
+    {
+      "id": "592130",
+      "name": "Top Leg",
+      "label": "Top Leg",
+      "category": "Waxing",
+      "price": "63.00"
+    },
+    {
+      "id": "15874",
+      "name": "Waxing - 3/4 leg",
+      "label": "3/4 leg Wax",
+      "category": "Waxing",
+      "price": "63.00"
+    },
+    {
+      "id": "15876",
+      "name": "Waxing - Back",
+      "label": "Back Wax",
+      "category": "Waxing",
+      "price": "75.00"
+    },
+    {
+      "id": "15878",
+      "name": "Waxing - Bikini",
+      "label": "Bikini Wax",
+      "category": "Waxing",
+      "price": "40.00"
+    },
+    {
+      "id": "15880",
+      "name": "Waxing - Brazilian",
+      "label": "Brazilian Wax",
+      "category": "Waxing",
+      "price": "75.00"
+    },
+    {
+      "id": "15882",
+      "name": "Waxing - Brow & lip",
+      "label": "Brow & lip Wax",
+      "category": "Waxing",
+      "price": "58.00"
+    },
+    {
+      "id": "15884",
+      "name": "Waxing - Brow Wax (Shape)",
+      "label": "Brow Wax (Shape)",
+      "category": "Waxing",
+      "price": "34.00"
+    },
+    {
+      "id": "15886",
+      "name": "Waxing - Brow. lip & chin",
+      "label": "Brow. lip & chin Wax",
+      "category": "Waxing",
+      "price": "69.00"
+    },
+    {
+      "id": "15888",
+      "name": "Waxing - Chest",
+      "label": "Chest Wax",
+      "category": "Waxing",
+      "price": "75.00"
+    },
+    {
+      "id": "15890",
+      "name": "Waxing - Full Arms",
+      "label": "Full Arms Wax",
+      "category": "Waxing",
+      "price": "63.00"
+    },
+    {
+      "id": "15892",
+      "name": "Waxing - Full Face, (includes brow wax)",
+      "label": "Full Face, (includes brow wax)",
+      "category": "Waxing",
+      "price": "80.00"
+    },
+    {
+      "id": "15894",
+      "name": "Waxing - Full leg & bikini",
+      "label": "Full leg & bikini Wax",
+      "category": "Waxing",
+      "price": "105.00"
+    },
+    {
+      "id": "15898",
+      "name": "Waxing - G-string",
+      "label": "G-string Wax",
+      "category": "Waxing",
+      "price": "63.00"
+    },
+    {
+      "id": "15900",
+      "name": "Waxing - Half Arms",
+      "label": "Half Arms Wax",
+      "category": "Waxing",
+      "price": "42.00"
+    },
+    {
+      "id": "15902",
+      "name": "Waxing - Half Legs",
+      "label": "Half Legs Wax",
+      "category": "Waxing",
+      "price": "63.00"
+    },
+    {
+      "id": "15906",
+      "name": "Waxing - Lip (includes nose tidy if needed)",
+      "label": "Lip Wax (includes nose tidy if needed)",
+      "category": "Waxing",
+      "price": "26.00"
+    },
+    {
+      "id": "15904",
+      "name": "Waxing - Lip and Chin",
+      "label": "Lip and Chin Wax",
+      "category": "Waxing",
+      "price": "60.00"
+    },
+    {
+      "id": "15908",
+      "name": "Waxing - Top leg & bikini",
+      "label": "Top leg & bikini Wax",
+      "category": "Waxing",
+      "price": "86.00"
+    },
+    {
+      "id": "15910",
+      "name": "Waxing - Underarms",
+      "label": "Underarms Wax",
+      "category": "Waxing",
+      "price": "32.00"
+    },
+    {
+      "id": "23157",
+      "name": "Waxing- Chin",
+      "label": "Chin Wax",
+      "category": "Waxing",
+      "price": "34.00"
+    }
+  ]
+}

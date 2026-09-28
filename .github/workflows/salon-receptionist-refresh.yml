@@ -1,49 +1,91 @@
-name: Refresh Anne's salon knowledge
+name: Refresh Anne's knowledge and booking data
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '**'
-      - '!README*'
-      - '!CLAUDE.md'
-      - '!screenshots/**'
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      site-revision:
+        description: The exact revision successfully uploaded by Deploy to Vodien
+        required: true
+        type: string
+    secrets:
+      ELEVENLABS_API_KEY:
+        required: true
+      TWILIO_ACCOUNT_SID:
+        required: true
+      TWILIO_AUTH_TOKEN:
+        required: true
+      SALON_WEBHOOK_SECRET:
+        required: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: salon-ten-anne-knowledge
+  group: salon-ten-anne-refresh
   cancel-in-progress: false
 
 jobs:
   refresh:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
-      - name: Check whether auto-refresh is enabled
-        id: enabled
+      - name: Require all refresh credentials
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          SALON_WEBHOOK_SECRET: ${{ secrets.SALON_WEBHOOK_SECRET }}
         run: |
-          if [[ -z "$ELEVENLABS_API_KEY" ]]; then
-            echo '::notice::Anne auto-refresh is disabled: ELEVENLABS_API_KEY repository secret is absent.'
-            echo 'ready=false' >> "$GITHUB_OUTPUT"
-          else
-            echo 'ready=true' >> "$GITHUB_OUTPUT"
-          fi
+          missing=0
+          for key in ELEVENLABS_API_KEY TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN SALON_WEBHOOK_SECRET; do
+            if [[ -z "${!key}" ]]; then
+              echo "::error::Required repository secret $key is absent. Anne was not refreshed."
+              missing=1
+            fi
+          done
+          exit "$missing"
 
-      - name: Read the latest main revision
-        if: steps.enabled.outputs.ready == 'true'
+      - name: Read the revision that was successfully published
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ inputs.site-revision }}
           persist-credentials: false
 
-      - name: Regenerate facts and replace the verified knowledge document
-        if: steps.enabled.outputs.ready == 'true'
+      - name: Match the Twilio Functions runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Regenerate website treatment links and the public Kitomba catalogue
+        run: |
+          python3 .github/receptionist/refresh_kb.py --site-dir . --dry-run
+          python3 .github/receptionist/refresh_kb.py --site-dir . --links-only
+          python3 .github/receptionist/refresh_catalogue.py
+
+      - name: Check safe deployment and Function syntax
+        run: |
+          python3 -m unittest discover -s .github/receptionist -p 'test_deployment.py'
+          node --check .github/receptionist/functions/common.private.js
+          node --check .github/receptionist/functions/send-booking-link.js
+          node --check .github/receptionist/functions/take-message.js
+
+      - name: Regenerate and verify Anne's knowledge document
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python3 .github/receptionist/refresh_kb.py --site-dir .
+
+      - name: Deploy refreshed lookup assets and Functions, preserving owner notifications
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          SALON_WEBHOOK_SECRET: ${{ secrets.SALON_WEBHOOK_SECRET }}
+        run: python3 .github/receptionist/deploy-functions.py --preserve-owner-notify
+
+      - name: Verify the live document and booking lookup assets without sending SMS
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          SALON_WEBHOOK_SECRET: ${{ secrets.SALON_WEBHOOK_SECRET }}
+        run: python3 .github/receptionist/verify-deployment.py

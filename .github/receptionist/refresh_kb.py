@@ -180,6 +180,33 @@ def sentences(text):
     return re.split(r"(?<=[.!?])\s+", text)
 
 
+def booking_link(page):
+    """This page's specific Kitomba service booking link, or None if it only carries the
+    generic all-services link (a multi-treatment category page, not a single treatment)."""
+    for node in main(page).find("a"):
+        href = node.attrs.get("href", "")
+        if node.text() == "Book Now" and href.startswith("https://apps.kitomba.com/") and "services[0][0]=" in href:
+            return href
+    return None
+
+
+def service_links(pages, index_page="index.html"):
+    """Slug -> {label, url} for every treatment linked from the homepage treatment index whose
+    own page carries a specific booking link. Multi-treatment category pages (no specific link)
+    are omitted; callers fall back to the generic booking link for those."""
+    links = {}
+    for group in main(pages[index_page]).find(cls="treat-cat"):
+        for link in group.find("a"):
+            filename = urlsplit(link.attrs.get("href", "")).path
+            if not filename.endswith(".html") or filename not in pages:
+                continue
+            href = booking_link(pages[filename])
+            if not href:
+                continue
+            links[filename[:-len(".html")]] = {"label": link.text(("arrow",)), "url": href}
+    return links
+
+
 def service_facts(page, filename, label):
     articles = main(page).find("article", "treatment")
     if not articles:
@@ -494,17 +521,40 @@ def publish(api, agent_id, text, state_path):
     return new_id
 
 
+def regenerate_links(site_dir, links_file, write):
+    pages = load_pages(site_dir)
+    links = service_links(pages)
+    if not links:
+        raise RefreshError("No treatment-specific booking links found on the website; refusing to write an empty service-link map")
+    links_json = json.dumps({
+        "generated_from": "Book Now links on salon-ten website treatment pages (see refresh_kb.py service_links)",
+        "services": links,
+    }, indent=2, sort_keys=True) + "\n"
+    old_links_json = links_file.read_text(encoding="utf-8") if links_file.exists() else ""
+    changed = links_json != old_links_json
+    print(f"Service-to-link map: {len(links)} treatment link(s), {'changed' if changed else 'unchanged'} (see {links_file.name}).")
+    if write and changed:
+        atomic_write(links_file, links_json)
+    return links, changed
+
+
 def run(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true", help="Print a diff; no API calls, credentials or writes")
     parser.add_argument("--upload-existing", action="store_true", help="Publish only the hand-edited KB, without regeneration")
+    parser.add_argument("--links-only", action="store_true", help="Regenerate only the service-link map; no ElevenLabs credential, KB read or publish")
     parser.add_argument("--site-dir", type=Path, default=KIT.parents[1] / "src/Gateway.Api/wwwroot/salon-ten")
     parser.add_argument("--kb-file", type=Path, default=KIT / "knowledge-base.md")
+    parser.add_argument("--links-file", type=Path, default=KIT / "functions/service-links.generated.json")
     parser.add_argument("--state-file", type=Path, default=KIT / ".state.json")
     parser.add_argument("--keys-file", type=Path, default=Path.home() / ".config/salon-receptionist/keys.env")
     parser.add_argument("--agent-id", default=os.environ.get("ELEVENLABS_AGENT_ID", DEFAULT_AGENT))
     args = parser.parse_args(argv)
     try:
+        if args.links_only:
+            regenerate_links(args.site_dir, args.links_file, write=not args.dry_run)
+            print("Dry run complete: no file writes." if args.dry_run else "Done.")
+            return 0
         original = args.kb_file.read_text(encoding="utf-8")
         if args.upload_existing:
             updated, notices = original, []
@@ -517,6 +567,7 @@ def run(argv=None):
         print(diff or "No local text changes.", end="" if diff else "\n")
         for notice in notices:
             print("NOTICE: " + notice)
+        regenerate_links(args.site_dir, args.links_file, write=False)
         if args.dry_run:
             print("Dry run complete: no API calls, credential reads or file writes.")
             return 0
@@ -524,6 +575,7 @@ def run(argv=None):
         publish(ElevenLabs(key), args.agent_id, updated, args.state_file)
         if updated != original:
             atomic_write(args.kb_file, updated)
+        regenerate_links(args.site_dir, args.links_file, write=True)
         return 0
     except (RefreshError, OSError, ValueError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
