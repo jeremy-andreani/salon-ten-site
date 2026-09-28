@@ -1,0 +1,49 @@
+{
+  "generated_from": "Book Now links on salon-ten website treatment pages (see refresh_kb.py service_links)",
+  "services": {
+    "aquaglow-hydra-facial": {
+      "label": "Aquaglow Hydra Facial",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000171488813&services[0][1]=service&services[0][2]="
+    },
+    "bbl-ipl-skin-rejuvenation": {
+      "label": "BBL & IPL Skin Rejuvenation",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000153037948&services[0][1]=service&services[0][2]="
+    },
+    "clinical-skin-peels": {
+      "label": "Clinical Skin Peels",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=1845790&services[0][1]=service&services[0][2]="
+    },
+    "cosmeceutical-facials": {
+      "label": "Cosmeceutical Facials",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=1885289&services[0][1]=service&services[0][2]="
+    },
+    "dermaplaning": {
+      "label": "Dermaplaning",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000181379998&services[0][1]=service&services[0][2]="
+    },
+    "ear-piercing": {
+      "label": "Ear Piercing",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000171489194&services[0][1]=service&services[0][2]="
+    },
+    "ipl-hair-removal": {
+      "label": "IPL Hair Removal",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000191723028&services[0][1]=service&services[0][2]="
+    },
+    "led-skin-treatments": {
+      "label": "LED Skin Treatments",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000155414884&services[0][1]=service&services[0][2]="
+    },
+    "microneedling": {
+      "label": "Skin Microneedling",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=100000000172113330&services[0][1]=service&services[0][2]="
+    },
+    "skin-tight-nano-facial": {
+      "label": "Nano Infusion Facial",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=890063&services[0][1]=service&services[0][2]="
+    },
+    "tanning": {
+      "label": "Spray Tanning",
+      "url": "https://apps.kitomba.com/bookings/salonten#services/all?services[0][0]=15867&services[0][1]=service&services[0][2]="
+    }
+  }
+}
