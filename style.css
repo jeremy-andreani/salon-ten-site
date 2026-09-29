@@ -266,6 +266,7 @@ blockquote { border-left: 3px solid var(--gold); margin: 20px 0; padding-left: 1
 .about-art img { width: 100%; height: 100%; object-fit: cover; }
 .about-copy .role { display: block; color: var(--accent-dark); font-weight: 600; font-size: 0.88rem; margin-bottom: 16px; }
 .about-copy p { color: var(--muted); margin: 0 0 16px; max-width: 56ch; }
+.about-copy h3 { font-size: 1.15rem; margin: 24px 0 10px; }
 .cred-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; }
 .cred-list li { display: flex; gap: 10px; font-size: 0.92rem; color: var(--ink); padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .cred-list li::before { content: "—"; color: var(--gold-dark); flex: none; }
