@@ -35,3 +35,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+// Fires the Meta "Schedule" pixel event on every link to apps.kitomba.com.
+document.addEventListener('DOMContentLoaded', function () {
+  var kitombaLinks = document.querySelectorAll('a[href*="apps.kitomba.com"]');
+  kitombaLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      if (typeof fbq === 'function') {
+        fbq('track', 'Schedule');
+      }
+    });
+  });
+});
