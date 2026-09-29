@@ -28,7 +28,7 @@ and take precedence over general website descriptions. Anything not stated is ma
 - Email: info@salonten.com.au
 - Address: 5/7 Wilsons Road, Mount Hutton, NSW 2290 — in the row of shops known as Fords Corner,
   leading up to the Lake Macquarie Square shopping centre.
-- Facebook: facebook.com/salontenbodyandbeauty
+- Facebook: facebook.com/salontenskinbodyandbeauty
 - Instagram handle: **Unknown** (not stated on the site).
 - Parking: plenty of free parking at the front and back of the salon.
 
