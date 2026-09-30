@@ -14,8 +14,9 @@
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'AW-976595232');
-    // GA4 placeholder: no GA4 property exists yet. Once created, add:
-    // gtag('config', 'G-XXXXXXXXXX');
+    // GA4: replace the quoted placeholder with the real measurement ID (G-...) to switch it on.
+    var GA4_MEASUREMENT_ID = 'GA4_MEASUREMENT_ID';
+    if (GA4_MEASUREMENT_ID.indexOf('G-') === 0) { gtag('config', GA4_MEASUREMENT_ID); }
   </script>
 <!-- Meta Pixel Code -->
 <script>

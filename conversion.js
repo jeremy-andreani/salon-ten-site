@@ -1,10 +1,25 @@
-// Fires the "Book Now click to Kitomba" Google Ads conversion on every link to kitomba.com.
+// On every link to kitomba.com (booking and voucher links): fires the GA4 book_now_click event,
+// the "Book Now click to Kitomba" Google Ads conversion and the Meta "Schedule" pixel event.
 document.addEventListener('DOMContentLoaded', function () {
   var links = document.querySelectorAll('a[href*="kitomba.com"]');
   links.forEach(function (link) {
     link.addEventListener('click', function (event) {
+      if (typeof fbq === 'function') {
+        fbq('track', 'Schedule');
+      }
+
       if (typeof gtag !== 'function') {
         return;
+      }
+
+      var ga4Ready = typeof GA4_MEASUREMENT_ID === 'string' && GA4_MEASUREMENT_ID.indexOf('G-') === 0;
+      if (ga4Ready) {
+        gtag('event', 'book_now_click', {
+          send_to: GA4_MEASUREMENT_ID,
+          link_url: link.href,
+          page_path: window.location.pathname,
+          transport_type: 'beacon'
+        });
       }
 
       var href = link.href;
@@ -32,18 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       setTimeout(navigate, 300);
-    });
-  });
-});
-
-// Fires the Meta "Schedule" pixel event on every link to apps.kitomba.com.
-document.addEventListener('DOMContentLoaded', function () {
-  var kitombaLinks = document.querySelectorAll('a[href*="apps.kitomba.com"]');
-  kitombaLinks.forEach(function (link) {
-    link.addEventListener('click', function () {
-      if (typeof fbq === 'function') {
-        fbq('track', 'Schedule');
-      }
     });
   });
 });
