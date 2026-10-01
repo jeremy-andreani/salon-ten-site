@@ -198,7 +198,6 @@ caption underneath it:
 - `dermaplaning.html`
 - `hair-removal.html`
 - `ear-piercing.html`
-- `cosmeceutical-facials.html`
 - `eyes.html`
 - `microdermabrasion.html`
 
