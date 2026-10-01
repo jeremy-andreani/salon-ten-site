@@ -11,17 +11,17 @@ no server-side code. Every page is a hand-written `.html` file that links to one
 `style.css` and one shared `nav.js`.
 
 - **Live site:** https://salonten.com.au/
-- **Master copy:** https://github.com/jeremy-andreani/salon-ten-site, on the `main` branch.
-  Make every content change here. Do not maintain a second master copy or upload edits by hand.
+- **Master copy:** https://github.com/jeremy-andreani/salon-ten-site. `main` is the live copy;
+  make content changes on the `staging` branch and merge to `main` once checked. Do not maintain a second master copy or upload edits by hand.
 - **Hosting:** Vodien. The workflow `.github/workflows/deploy-vodien.yml` publishes changes from
   `main` to the live site using an encrypted FTP connection. Once Jeremy completes the one-time
   connection setup, updates should normally appear within a couple of minutes of a push.
 - **First activation:** follow [.github/VODIEN-SETUP.md](.github/VODIEN-SETUP.md). Publishing is
   not connected until the workflow has been pushed to GitHub, the three secrets have been added,
   and **Deploy to Vodien** has completed successfully. Do not call a change live before that.
-- **Old preview:** https://jeremy-andreani.github.io/salon-ten-site/ is only the previous preview.
-  Its settings have been left alone. Always give Kellie the `salonten.com.au` link and verify
-  changes there. A successful GitHub Pages build does not mean Vodien has been updated.
+- **Staging (test site):** https://jeremy-andreani.github.io/salon-ten-site/ now shows the
+  `staging` branch, not live. Work on `staging`, check it there, then merge to `main` to go live.
+  See [STAGING.md](STAGING.md). A successful staging build never means Vodien has been updated.
 - **Domain:** already hosted at Vodien. Content edits do not require any DNS or domain changes.
 
 ## Repo layout
@@ -211,29 +211,44 @@ caption underneath it:
 
 ## Safe workflow for any change
 
-1. Work in `jeremy-andreani/salon-ten-site` and read this file. Pull the latest `main` before
-   editing. If there are existing local changes or a conflict, preserve them and resolve it;
-   never force-push or discard someone else's work.
+**Work on `staging`, never straight on `main`.** Pushing to `main` publishes to the real website
+within minutes. Pushing to `staging` only updates the test site. Full detail is in
+[STAGING.md](STAGING.md).
+
+1. Work in `jeremy-andreani/salon-ten-site` and read this file. Switch to `staging` and pull it
+   (`git checkout staging && git pull`). If `staging` is behind `main`, merge `main` into it first
+   (`git merge origin/main`). If there are existing local changes or a conflict, preserve them and
+   resolve it; never force-push or discard someone else's work.
 2. Make the change Kellie requested, using her wording. Check the page and its links locally.
 3. Run `python3 .github/scripts/build_site.py /path/to/a/new/output-folder` to check the upload.
    Choose a new empty destination each time. Add new website files to git before running it.
-4. Commit with a plain, specific message, then push to `main`. This publishes the change to the
-   real website once the one-time connection is active.
-5. Open https://github.com/jeremy-andreani/salon-ten-site/actions and check **Deploy to Vodien**
-   for the latest change. Wait for a green tick. If it fails, read the failed step. Missing
-   `VODIEN_FTP_SERVER`, `VODIEN_FTP_USERNAME` or `VODIEN_FTP_PASSWORD` means the one-time setup
-   is incomplete. A queued run or first upload can take longer than a couple of minutes.
-6. Open the changed page at https://salonten.com.au/ and refresh it. If it looks old after a
-   successful upload, hard-refresh (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows), then check it
-   on a phone too. Confirm the actual changed wording or image before reporting it live.
-7. Tell Kellie what changed and give the live `salonten.com.au` page link. If publishing failed,
+4. Commit with a plain, specific message, then push to `staging`. This updates the test site only.
+5. Open https://github.com/jeremy-andreani/salon-ten-site/actions and wait for a green tick on
+   **Deploy staging preview**, then open https://jeremy-andreani.github.io/salon-ten-site/ and
+   check the changed page (hard-refresh: Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows). Confirm the
+   actual changed wording or image, and check it on a phone too.
+6. Only when the staging preview looks right and Kellie has approved it, go live: open a pull
+   request from `staging` into `main` and merge it (or merge `staging` into `main` and push).
+   This is the step that publishes to the real website.
+7. Open the Actions tab and check **Deploy to Vodien** for the merge. Wait for a green tick. If it
+   fails, read the failed step. Missing `VODIEN_FTP_SERVER`, `VODIEN_FTP_USERNAME` or
+   `VODIEN_FTP_PASSWORD` means the one-time setup is incomplete.
+8. Open the changed page at https://salonten.com.au/ and refresh it. If it looks old after a
+   successful upload, hard-refresh, then check it on a phone too. Confirm the actual changed
+   wording or image before reporting it live.
+9. Tell Kellie what changed and give the live `salonten.com.au` page link. If publishing failed,
    say that clearly; a saved GitHub change alone does not mean the live website changed.
 
-If a published edit needs undoing, revert that edit in git and push the reversal to `main`.
-Do not try to fix it by editing a second copy in cPanel.
+If a published edit needs undoing, revert that edit in git on `staging`, check it on the preview,
+then merge to `main`. Do not try to fix it by editing a second copy in cPanel. In a genuine
+emergency on the live site only, a revert pushed directly to `main` is acceptable; merge `main`
+back into `staging` afterwards so the two do not drift.
 
 ## What NOT to do
 
+- **Do not push untested changes straight to `main`.** `main` is live. Use `staging` first.
+- **Do not edit the staging workflow or `.github/scripts/stage_site.py` as part of a content edit.**
+  They keep the test site out of Google and stop it counting ad and analytics events.
 - **Do not delete any page.** If a page seems wrong or redundant, flag it rather than removing it.
 - **Do not change `style.css` in a way that affects every page** (colours, fonts, header, footer,
   button styles) without asking first - one page's fix can quietly change the whole site.
