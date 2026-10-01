@@ -15,11 +15,15 @@ ad reporting. It is built on GitHub, so it does not depend on anyone's computer 
    `git merge origin/main` so `staging` includes it.
 2. **Make the change and push to `staging`.** The **Deploy staging preview** workflow runs
    (Actions tab) and takes about a minute.
-3. **Check the preview URL** above once the workflow shows a green tick. Hard-refresh
-   (Cmd+Shift+R) and check on a phone.
-4. **Go live only when it looks right:** open a pull request from `staging` into `main` and
-   merge it, or merge `staging` into `main` and push. **Deploy to Vodien** then publishes it.
-5. **Check the live page** at salonten.com.au.
+3. **Check the preview** once the workflow shows a green tick. Hard-refresh (Cmd+Shift+R) and
+   check on a phone.
+4. **Give Kellie the test site link, tell her what changed, then STOP and ask her to check it.**
+   Claude never decides for itself that it is ready to go live.
+5. **Go live only after Kellie explicitly says she is happy.** Claude then does it itself, without
+   asking her to: merge `staging` into `main` and push. **Deploy to Vodien** then publishes it.
+6. **Check the live page** at salonten.com.au and tell Kellie it is live.
+
+Pushing to `staging` never changes the live site. Only the merge to `main` does.
 
 **Never push straight to `main` for untested changes.** `main` goes live within minutes.
 

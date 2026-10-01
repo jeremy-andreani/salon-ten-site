@@ -211,9 +211,9 @@ caption underneath it:
 
 ## Safe workflow for any change
 
-**Work on `staging`, never straight on `main`.** Pushing to `main` publishes to the real website
-within minutes. Pushing to `staging` only updates the test site. Full detail is in
-[STAGING.md](STAGING.md).
+**Work on `staging`, never straight on `main`.** Pushing to `staging` never changes the live site.
+Only the merge to `main` does, and it publishes to the real website within minutes. Full detail is
+in [STAGING.md](STAGING.md).
 
 1. Work in `jeremy-andreani/salon-ten-site` and read this file. Switch to `staging` and pull it
    (`git checkout staging && git pull`). If `staging` is behind `main`, merge `main` into it first
@@ -227,17 +227,20 @@ within minutes. Pushing to `staging` only updates the test site. Full detail is 
    **Deploy staging preview**, then open https://jeremy-andreani.github.io/salon-ten-site/ and
    check the changed page (hard-refresh: Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows). Confirm the
    actual changed wording or image, and check it on a phone too.
-6. Only when the staging preview looks right and Kellie has approved it, go live: open a pull
-   request from `staging` into `main` and merge it (or merge `staging` into `main` and push).
-   This is the step that publishes to the real website.
-7. Open the Actions tab and check **Deploy to Vodien** for the merge. Wait for a green tick. If it
+6. Give Kellie the test site link (https://jeremy-andreani.github.io/salon-ten-site/) and tell her
+   what changed. Then STOP and ask her to check it. Do not go live yet, and never decide on your
+   own judgement that it is ready.
+7. Only after Kellie explicitly says she is happy, go live. Do it yourself; do not leave it for her
+   to do by hand: merge `staging` into `main` and push. This is the step that publishes to the
+   real website.
+8. Open the Actions tab and check **Deploy to Vodien** for the merge. Wait for a green tick. If it
    fails, read the failed step. Missing `VODIEN_FTP_SERVER`, `VODIEN_FTP_USERNAME` or
    `VODIEN_FTP_PASSWORD` means the one-time setup is incomplete.
-8. Open the changed page at https://salonten.com.au/ and refresh it. If it looks old after a
+9. Open the changed page at https://salonten.com.au/ and refresh it. If it looks old after a
    successful upload, hard-refresh, then check it on a phone too. Confirm the actual changed
    wording or image before reporting it live.
-9. Tell Kellie what changed and give the live `salonten.com.au` page link. If publishing failed,
-   say that clearly; a saved GitHub change alone does not mean the live website changed.
+10. Tell Kellie it is live and give the `salonten.com.au` page link. If publishing failed, say that
+    clearly; a saved GitHub change alone does not mean the live website changed.
 
 If a published edit needs undoing, revert that edit in git on `staging`, check it on the preview,
 then merge to `main`. Do not try to fix it by editing a second copy in cPanel. In a genuine
