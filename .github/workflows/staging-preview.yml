@@ -1,0 +1,53 @@
+name: Deploy staging preview
+
+# Publishes the staging branch to the GitHub Pages test site. Never touches Vodien or the live site.
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salon-ten-staging-preview
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Get the staging copy
+        uses: actions/checkout@v6
+        with:
+          ref: staging
+          persist-credentials: false
+
+      - name: Build and check the website files
+        run: python3 .github/scripts/build_site.py "$RUNNER_TEMP/salon-ten-staging"
+
+      - name: Hide the copy from search engines and switch tracking off
+        run: python3 .github/scripts/stage_site.py "$RUNNER_TEMP/salon-ten-staging"
+
+      - name: Package the preview
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ runner.temp }}/salon-ten-staging
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to the test site
+        id: deployment
+        uses: actions/deploy-pages@v5
