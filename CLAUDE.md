@@ -40,7 +40,7 @@ no server-side code. Every page is a hand-written `.html` file that links to one
   (About, Our Team, FAQ, Salon Policies & Etiquette, Contact & map).
 - `style.css` - the **one** shared stylesheet every page links to. Palette, type, buttons, header,
   hero, cards, footer - all of it lives here. Changing this file changes every page at once.
-- `nav.js` - the small script that makes the mobile hamburger menu open/close. Shared by every
+- `nav.js` - the small script that makes the mobile hamburger menu open/close and the submenu chevrons expand/collapse. Shared by every
   page; do not duplicate its logic inline.
 - `conversion.js` - fires the Google Ads conversion tag when a Book Now / Gift Vouchers link is
   clicked. Every page loads it. Leave it alone unless specifically asked to touch ad tracking.
@@ -94,11 +94,29 @@ Keep the Google Ads tag block on every page, unchanged.
     </button>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
-      <li><a href="treatments.html">Treatments</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="team.html">Our Team</a></li>
-      <li><a href="faq.html">FAQ</a></li>
-      <li><a href="policies.html">Policies</a></li>
+      <li class="has-sub">
+        <a href="treatments.html">Treatments</a>
+        <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="sub-treatments" aria-label="Show Treatments pages"><span aria-hidden="true"></span></button>
+        <ul class="sub-menu" id="sub-treatments">
+          <li><a href="treatments.html">All Treatments</a></li>
+          <li><a href="skin-assessment.html">Skin Consultation</a></li>
+          <li><a href="packages.html">Packages</a></li>
+          <li><a href="promotions.html">Current Specials</a></li>
+        </ul>
+      </li>
+      <li><a href="skin-concerns.html">Skin Concerns</a></li>
+      <li><a href="price-list.html">Prices</a></li>
+      <li><a href="gift-vouchers.html">Gift Vouchers</a></li>
+      <li class="has-sub">
+        <a href="about.html">About</a>
+        <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="sub-about" aria-label="Show About pages"><span aria-hidden="true"></span></button>
+        <ul class="sub-menu" id="sub-about">
+          <li><a href="about.html">Our Story &amp; Team</a></li>
+          <li><a href="first-visit.html">Your First Visit</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="policies.html">Policies</a></li>
+        </ul>
+      </li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="header-actions">
@@ -108,6 +126,8 @@ Keep the Google Ads tag block on every page, unchanged.
   </div>
 </header>
 ```
+
+Mobile submenus use chevron toggles. On phones (768px and narrower) each `.has-sub` submenu starts collapsed: tapping the word (Treatments, About) follows its link, and tapping the chevron button beside it opens or closes the submenu (`nav.js` handles this, and closing the hamburger collapses them again; without JavaScript the submenus simply stay visible). Every new `.has-sub` item must include its own toggle, on the line straight after the parent link, with a matching `id` on its `<ul class="sub-menu">`, exactly as above: `<button class="sub-toggle" type="button" aria-expanded="false" aria-controls="sub-NAME" aria-label="Show NAME pages"><span aria-hidden="true"></span></button>` then `<ul class="sub-menu" id="sub-NAME">`. The open mobile menu also scrolls within the screen, so a longer menu never runs off the bottom. Desktop keeps the hover dropdowns; the toggle is hidden there.
 
 **Footer (identical on every page - copy verbatim):**
 ```html
