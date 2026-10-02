@@ -146,6 +146,11 @@ main { display: block; }
 .btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
 .btn-secondary:hover { background: var(--ink); color: #fff; }
 
+/* Gold button - gift vouchers and secondary actions. Navy text, not white:
+   gold on white is 2.3:1 and unreadable, gold on navy ink is 7.5:1. */
+.btn-gold { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.btn-gold:hover { background: var(--gold-dark); border-color: var(--gold-dark); color: var(--ink); }
+
 .btn-small { padding: 6px 14px; font-size: 0.85rem; }
 .btn-block { display: block; width: 100%; }
 .btn-large { padding: 16px 20px; font-size: 1.1rem; }
