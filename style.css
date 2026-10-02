@@ -405,6 +405,12 @@ body.lp { background: var(--bg); }
     border-bottom: 1px solid var(--line);
   }
   .nav-links a::after { display: none; }
+  .has-sub > a::before { display: none; }
+  .has-sub > .sub-menu {
+    display: block; position: static; border: none; border-radius: 0;
+    padding: 0 0 0 18px; min-width: 0; background: none;
+  }
+  .sub-menu a { padding: 12px 4px; font-size: 0.9rem; color: var(--muted); }
 }
 
 /* Skin Concerns accordion (skin-concerns.html only) */
@@ -432,3 +438,30 @@ body.lp { background: var(--bg); }
 .concern > summary:hover h2 { color: var(--accent-dark); }
 .concern[open] { padding-bottom: 14px; }
 .concern > p { margin-bottom: 12px; }
+
+/* About dropdown in the main menu */
+.has-sub { position: relative; }
+.has-sub > a::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 100%; height: 10px;
+}
+.has-sub > .sub-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: -16px;
+  min-width: 200px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 6px 0;
+  margin: 0;
+  list-style: none;
+  z-index: 60;
+}
+.has-sub:hover > .sub-menu,
+.has-sub:focus-within > .sub-menu { display: block; }
+.sub-menu li { width: 100%; }
+.sub-menu a { display: block; padding: 9px 16px; }
+.sub-menu a::after { display: none; }
+.sub-menu a:hover { color: var(--accent-dark); background: var(--accent-soft); }
