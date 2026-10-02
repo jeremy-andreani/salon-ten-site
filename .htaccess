@@ -28,7 +28,9 @@ RewriteRule ^tanning/?$ /tanning.html [R=301,L]
 RewriteRule ^ear-piercing/?$ /ear-piercing.html [R=301,L]
 RewriteRule ^promotions/?$ /promotions.html [R=301,L]
 RewriteRule ^about/?$ /about.html [R=301,L]
-RewriteRule ^our-team/?$ /team.html [R=301,L]
+RewriteRule ^our-team/?$ /about.html [R=301,L]
+# The team page is now part of About (2 Oct 2026).
+RewriteRule ^team\.html$ /about.html [R=301,L]
 RewriteRule ^faq/?$ /faq.html [R=301,L]
 # The former vouchers page is now covered by the home page Gift Vouchers links.
 RewriteRule ^vouchers/?$ /index.html [R=301,L]
